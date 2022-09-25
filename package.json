@@ -4,7 +4,9 @@
   "description": "cypress course",
   "main": "index.js",
   "scripts": {
-    "runner": "cypress open --e2e --browser chrome"
+    "runner": "cypress open --e2e --browser chrome",
+    "cypress-run": "cypress run --browser chrome --spec cypress/e2e/parallel-test/*.ts --key 67a504e6-5c5f-4ed9-9c33-649ca8c1ecb5",
+    "cypress-dashboard-parallel": "cypress run --record --key 67a504e6-5c5f-4ed9-9c33-649ca8c1ecb5 --parallel --spec cypress/e2e/parallel-test/*.ts --browser chrome"
   },
   "keywords": [
     "cpyress",
