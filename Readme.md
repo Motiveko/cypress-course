@@ -83,6 +83,41 @@ cy.get('button').click().should('have.class', 'active');
 ### [.then() vs .should()](https://docs.cypress.io/api/commands/and#Subjects)
 - `should()`는 assertion을 바로 할 때 쓰고, `then()`은 assertion 전에 뭔가 작업이 필요할 때 쓰면 된다.(ex. logging)
 
+<br>
+
+## CSS & XPath Selectors
+- [`cy.get()`](https://docs.cypress.io/api/commands/get) : [CSS Selector](https://www.w3schools.com/cssref/css_selectors.asp)로 DOM요소를 쿼리하고 싶을 때 사용한다.
+- [`cy.contains()`](https://docs.cypress.io/api/commands/contains): DOM 요소르 `text content`로 쿼리하고 싶을 때 사용한다.
+- [`cy.find()`](https://docs.cypress.io/api/commands/find): 어떤 요소의 자식 요소를 찾을때 사용한다.
+  - 먼저 DOM을 쿼리하고 자식을 찾아야 하므로 `get`, `contains`에 체이닝 해서 쓰게 된다.
+  - 이 때, 예를들어 `get`으로 쿼리한 결과가 여러개라도 [`find`는 만족하는 결과가 나올때까지 여러개의 DOM요소에다가 find를 retry한다.](https://docs.cypress.io/api/commands/find#Assertions)
+  ```ts
+  // div가 여러개라도 button을 가진 녀석을 알아서 찾아낸다.
+  cy.get('div').find('button').should('have.text', 'Button with Dynamic ID');
+  ```
+  - 위 코드에서 `find` 뒤에 `should` assertion이 체이닝 되었는데, find는 `div > button` 요소(들)에서 should를 만족하는 애를 찾을때까지 retry 하게 된다.
+
+
+- cypress는 기본적으로 [`XPath`](https://devhints.io/xpath)는 지원하지 않는다. 이걸 쓸려면 [cypress-xpath](https://www.npmjs.com/package/cypress-xpath) 플러그인을 설치해야 한다.
+  - 설치
+  ```bash
+  npm install -D cypress-xpath
+  ```
+  - cypress support에 모듈 추가(전역)
+  ```ts
+  // cypress/support/e2e.ts
+  require('cypress-xpath');
+  ```
+  - 타입스크립트 types 추가(TypeScript and IntelliSense support)
+  ```js
+  // tsconfig.js
+  {
+    "compilerOptions": {
+      "types": ["cypress", "cypress-xpath"]
+    }
+  }
+  ```
+  - `cy.xpath()` 커맨드로 xpath 기반으로 DOM 쿼리가 가능해진다!
 
 
 <br>
@@ -95,7 +130,7 @@ cy.get('button').click().should('have.class', 'active');
 
 ## Cypress + Github Action (5 nodes Parallel execution)
 - 테스트를 [`Github Action`](https://docs.github.com/en/actions)에서 실행할 수도 있다. Github Action은 [github에서 제공하는 CI/CD 플랫폼](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#overview)으로 jenkins같은거라고 생각하면 편할 것 같다.
-- [workflow](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#overview) 라고 하는 자동화 된 작업을 `.github/workflows`에 `yaml`로 정의하면 된다.
+- [workflow](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#overview) 라고 하는 자동화 된 작업을 `.github/workflows`에 `yaml`로 정의하면 된다. 작성 방법은 [`cypress-io/github-action`](https://github.com/cypress-io/github-action)의 가이드를 참고하면 된다.
 
 > 회사 깃은 action이 없다.. 아마 hooks를 이용해서 직접 서버에서 테스트 돌아가도록 구현해야 할 듯
 

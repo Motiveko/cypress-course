@@ -1,8 +1,18 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["es5", "dom"],
-    "types": ["cypress", "node"]
+    "lib": [
+      "es5",
+      "dom"
+    ],
+    "types": [
+      "cypress",
+      "cypress-xpath",
+      "node"
+    ]
   },
-  "include": ["**/*.ts", "e2e/1-helloworld.cy.js"]
+  "include": [
+    "**/*.ts",
+    "e2e/1-helloworld.cy.js"
+  ]
 }
