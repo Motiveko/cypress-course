@@ -82,3 +82,23 @@ cy.get('button').click().should('have.class', 'active');
 
 ### [.then() vs .should()](https://docs.cypress.io/api/commands/and#Subjects)
 - `should()`는 assertion을 바로 할 때 쓰고, `then()`은 assertion 전에 뭔가 작업이 필요할 때 쓰면 된다.(ex. logging)
+
+
+
+<br>
+
+## Cypress Dashboard
+- cypress에서 제공하는 dashboard에서 테스트 결과를 확인할 수 있다.
+- `organization`과 `project`를 만들고 나면 `project id`가 생기고 `key`가 생긴다. `cypress.config.ts`에 `projectId`를 설정하고, `cypress run`에 key를 전달해주면 실행한 테스트 결과를 dashboard에서 확인할 수 있다.
+
+<br>
+
+## Cypress + Github Action (5 nodes Parallel execution)
+- 테스트를 [`Github Action`](https://docs.github.com/en/actions)에서 실행할 수도 있다. Github Action은 [github에서 제공하는 CI/CD 플랫폼](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#overview)으로 jenkins같은거라고 생각하면 편할 것 같다.
+- [workflow](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#overview) 라고 하는 자동화 된 작업을 `.github/workflows`에 `yaml`로 정의하면 된다.
+
+> 회사 깃은 action이 없다.. 아마 hooks를 이용해서 직접 서버에서 테스트 돌아가도록 구현해야 할 듯
+
+- 테스트가 많아지면 실행 시간도 길어진다. 여러개의 컨테이너를 이용해서 테스트를 실행하는 [`parallel execution`](https://docs.cypress.io/guides/guides/parallelization)도 가능하다. 이건 cypress를 특정 서비스에 integration 하면서 `cypress-io`패키지를 써서 가능한 부분인 것 같다. 
+
+<br>
