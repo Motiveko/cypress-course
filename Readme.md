@@ -128,7 +128,62 @@ cy.get('button').click().should('have.class', 'active');
 
 <br>
 
+## Automatic Waits([Retry-ability](https://docs.cypress.io/guides/core-concepts/retry-ability#What-you-ll-learn), explained)
+- cypress에서 여러가지 비동기 동작에 대해 [timeout을 설정](https://docs.cypress.io/guides/references/configuration#Timeouts)할 수 있다. 대표적으로 
+  - `pageLoadTimeout` : `visit()`, `go()`, `reload()`에 대한 timeout
+  - `defaultCommandTimeout`: DOM based timeout (`get()`, `find()`, ...)
+- `cypress command`에 체이닝된 `assertion`에 타임아웃을 걸 땐 체이닝한 command에다가 `timeout` 옵션을 전달하면 된다.
+```ts
+cy
+  .get('#progressBar', {timeout: 25000}) // 요소에 75% text가 있는지에 대한 assertion을 25초동안 retry한다.
+  .should('have.text', '75%'); 
+```
+- 깊은 depth를 가지는 DOM 요소 등을 쿼리할 때, 가급적 쿼리는 한방에 작성하는게 좋다.([Merging Queries](https://docs.cypress.io/guides/core-concepts/retry-ability#Merging-queries))
+  - 이유는 쿼리를 쪼개게 되면, 한번 성공한 쿼리는 재시도 하지 않기 때문인데 이건 문제가 될 수 있는 여지가 있다. 예를들면 아래와 같은 케이스다.
+  ```ts
+  it('adds two items', () => {
+    cy.visit('/')
 
+    cy.get('[data-testid="new-todo"]').type('todo A{enter}')
+    cy.get('[data-testid="todo-list"] li label') // 1 query command
+      .should('contain', 'todo A') // assertion
+
+    cy.get('[data-testid="new-todo"]').type('todo B{enter}')
+
+    // 🛑 bad 
+    cy.get('[data-testid="todo-list"] li')
+      .find('label') // 쿼리 분리
+      .should('contain', 'todo B') 
+
+    // ✅ good
+    cy.get('[data-testid="todo-list"] li label') // 1 query command
+      .should('contain', 'todo B') // assertion
+  })
+  ```
+  > 이게 테스트 성공/실패를 가르는건 잘 모르겠다. bad/good 케이스 모두 어차피 성공할 것 같은데.. 고민이 필요하다.
+  - DOM 쿼리가 아닌 아닌 다른 사례도 있다. window 객체의 프로퍼티를 쿼리하는 것과 같이 javascript 객체 쿼리도 한번에 묶도록 하자.
+  ```ts
+  // 🛑 not recommended
+  // only the last "its" will be retried
+  cy.window()
+    .its('app') // runs once
+    .its('model') // runs once
+    .its('todos') // retried
+    .should('have.length', 2)
+
+  // ✅ recommended
+  cy.window()
+    .its('app.model.todos') // retried
+    .should('have.length', 2)
+  ```
+  
+- 팁으로, 좀 긴 테스트를 체이닝 하는 경우가 있다. `cy.command().assertion().command().assertion()....`같은 형태다.
+```ts
+cy.get('[data-testid="todo-list"] li') // command
+  .should('have.length', 1) // assertion
+  .find('label') // command
+  .should('contain', 'todo A') // assertion
+```
 
 <br>
 
