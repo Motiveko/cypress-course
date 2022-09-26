@@ -117,7 +117,17 @@ cy.get('button').click().should('have.class', 'active');
     }
   }
   ```
-  - `cy.xpath()` 커맨드로 xpath 기반으로 DOM 쿼리가 가능해진다!
+  - `cy.xpath()` 커맨드로 xpath 기반으로 DOM 쿼리가 가능해진다! 
+    - 하지만 xpath보다 그냥 css selector가 훨씬 직관적이고 편하다.
+  - DOM요소의 css 속성값 테스트는 아래와 같은 형태로 한다.
+  ```ts
+  // .should('have.css', 'key', 'value')
+  .should('have.css', 'background-color', 'rgb(0, 123, 255)')
+  ```
+    - 이 때 색상은 hex가 아닌 rgb로 해야한다는 번거로움이 존재한다. [hex-to-rgb](https://www.rapidtables.com/convert/color/hex-to-rgb.html)사이트들을 적극 활용하자.
+
+<br>
+
 
 
 <br>
