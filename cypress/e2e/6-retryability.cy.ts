@@ -13,7 +13,7 @@ describe('Retry ability demo', () => {
       'Data calculated on the client side.',
     );
   });
-  it.only('progress bar scenario', () => {
+  it('progress bar scenario', () => {
     cy.visit('/progressbar');
     cy.get('#startButton').click();
     cy.get('#progressBar', {timeout: 25000}).should('have.text', '75%'); // element에 timeout을 주면 그 뒤에 체이닝되는 assertion에도 timeout이 적용된다.

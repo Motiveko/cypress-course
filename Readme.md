@@ -117,6 +117,8 @@ cy.get('button').click().should('have.class', 'active');
     }
   }
   ```
+  > 참고 : [types에 `cypress`, `cypress-xpath`를 추가해야 하는 이유 ](https://typescript-kr.github.io/pages/tsconfig.json.html): `cy.command()`는 전역으로 사용되어 `import cy from 'cypress'` 같은게 없다. 따라서 cy라는 커맨드에 대한 타입을 컴파일러 옵션에 직접 전달해줘야 타입스크립트가 이게 전역변수로 존재하는 객체라는걸 알고 자동완성을 시켜주게 된다. `cypress-xpath`도 마찬가지. 즉 모듈 import 없이 전역으로 쓰는 애들의 타입은 `compilerOptions.types`에 추가해줘야 한다.
+  
   - `cy.xpath()` 커맨드로 xpath 기반으로 DOM 쿼리가 가능해진다! 
     - 하지만 xpath보다 그냥 css selector가 훨씬 직관적이고 편하다.
   - DOM요소의 css 속성값 테스트는 아래와 같은 형태로 한다.
@@ -124,7 +126,8 @@ cy.get('button').click().should('have.class', 'active');
   // .should('have.css', 'key', 'value')
   .should('have.css', 'background-color', 'rgb(0, 123, 255)')
   ```
-    - 이 때 색상은 hex가 아닌 rgb로 해야한다는 번거로움이 존재한다. [hex-to-rgb](https://www.rapidtables.com/convert/color/hex-to-rgb.html)사이트들을 적극 활용하자.
+    - 이 때 색상은 hex가 아닌 rgb로 해야한다는 번거로움이 존재한다. ~~[hex-to-rgb](https://www.rapidtables.com/convert/color/hex-to-rgb.html)사이트들을 적극 활용하자.~~
+      - 개발자도구에서 Elements - Computed 를 가면 rgb로 계산된 값을 볼 수 
 
 <br>
 
@@ -184,6 +187,27 @@ cy.get('[data-testid="todo-list"] li') // command
   .find('label') // command
   .should('contain', 'todo A') // assertion
 ```
+
+<br>
+
+## Click, Hover, and Dynamic Table Challanges
+- click은 간단하다. cy.get().click() 이후에도 계속 체이닝하면 된다.
+
+### Hover
+- cypress는 [`cy.hover()` 형태의 hover 동작을 메서드로 제공하지 않는다.](https://docs.cypress.io/api/commands/hover).
+- [몇가지 대안이 있다.](https://docs.cypress.io/api/commands/hover#Workarounds)
+  - `trigger('mouseover')`: mouseover 이벤트를 발생시키는 형태로 보인다. 근데 이 방법은 javascript의 `onmouseenter` 핸들러는 트리거 시킬수 있는데, ***css `:hover`에는 동작하지 않는다.***
+  -  [`invoke('show').click()`](https://docs.cypress.io/api/commands/hover#Invoke) : 최종적으로 클릭하는거다. 
+  - forceClick, custom command..
+
+- 근데 위 대안들(workarounds)은 문제가 생길 여지가 있다. cypress의 기본 이벤트는 untrusted(`event.isTrusted: false`)이기 때문.
+- [cypress-real-event](https://github.com/dmtrKovalenko/cypress-real-events)패키지가 좋은 대안이다. [Chrome Devtools Protocol](https://chromedevtools.github.io/devtools-protocol/)를 사용해서 [실제 native system event가 발생하는것과 동일한 형태의 이벤트를 발생시킨다](https://github.com/dmtrKovalenko/cypress-real-events#why)고 한다. 크로미눔 브라우저에서만 동작하므로 firefox 환경은 사용 불가라고 한다.
+  - 설치는 [공식문서 Installation](https://github.com/dmtrKovalenko/cypress-real-events#installation)에 매우 친절히 나와있따.
+  - `cypress/support/index.ts`에 `import 'cypress-real-events/support';`추가하는것만 cypress v10부터 `cypress/support/e2e.ts`에 추가해주면 된다.
+
+- [참고] hover 관련해서 class가 바뀌는 경우를 테스트할 때 메서드 체이닝으로 테스트하면 안된다.
+
+
 
 <br>
 
