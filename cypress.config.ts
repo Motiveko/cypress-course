@@ -21,4 +21,7 @@ export default defineConfig({
       // implement node event listeners here
     },
   },
+  pageLoadTimeout: 60000,
+  viewportHeight: 1000,
+  viewportWidth: 1400,
 });

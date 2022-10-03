@@ -216,6 +216,83 @@ cy.get('[data-testid="todo-list"] li') // command
 
 <br>
 
+### [Enviroment Variables](https://docs.cypress.io/guides/guides/environment-variables)
+- 환경변수. 테스트 코드에서 `Cypress.env(KEY)`로 읽어서 사용할 수 있다.
+- 설정하는 방법은 크게 4가지다.
+  - `cypress.config.ts`파일의 `env`
+  - `cypress.env.json`에 작성
+  - `CPYRESS_*` 환경변수(OS 레벨인듯)에다가 설정하기
+  - cli로 실행시 --env로 전달
+  - `describe`, `it`에서 설정
+    ```ts
+    // 요런식..
+    describe(
+      'test against Spanish content',
+      {
+        env: {
+          language: 'es',
+        },
+      },
+      () => {
+        it('displays Spanish', () => {
+          cy.visit(`https://docs.cypress.io/${Cypress.env('language')}/`)
+          cy.contains('¿Por qué Cypress?')
+        })
+      }
+    )
+  
+    // 개별 test case에도 적용가눙
+    it(
+      'smoke test develop api',
+      {
+        env: {
+          api: 'https://dev.myapi.com',
+        },
+      },
+      () => {
+        cy.request(Cypress.env('api')).its('status').should('eq', 200)
+      }
+    )
+    ```
+
+- ### 🔥🔥🔥 [Environment variables Recipe](https://github.com/cypress-io/cypress-example-recipes/tree/master/examples/server-communication__env-variables)를 따라해보자. [`dotenv`](https://www.npmjs.com/package/dotenv)에 profile별 환경변수를 작성하고, 이를 `cypress.config.js`파일에서 읽어서 환경 변수를 설정할 수 있게 할 수 있다.🔥🔥🔥
+
+<br>
+
+### Viewport
+- cypress는 테스트 실행시 뷰포트 크기를 코드에서 지정할 수 있다. 이거는 실제 화면 픽셀과 별개로, 브라우저 크기를 줄여도 고정되어있다.
+  ```ts
+  // cypress.config.ts
+  export default defineConfig({
+    // ...
+    viewportHeight: 1000,
+    viewportWidth: 1400,
+  });
+  ```
+- 설정파일은 기본값이고, 매 테스트 케이스에서 [`cy.viewport()`](https://docs.cypress.io/api/commands/viewport)메서드를 이용해서   뷰포트 크기를 조정할 수 있다!
+  ```ts
+  cy.viewport('iphone-6');  // preset
+  cy.viewport(400, 600);  // (width, heigth)
+  ```
+
+
+### CORS 관련 오류
+  - [페이지 접근(`visit`)시 테스트환경에서 CORS가 발생하는 경우](https://docs.cypress.io/guides/references/error-messages#Cypress-detected-that-an-uncaught-error-was-thrown-from-a-cross-origin-script)가 있다. 이 때 이게 exception을 발생시키는데, 테스트코드에서 이를 catch 하지 못해서 `Uncaught Exceptions` 이벤트가 전역에서 발생하게 되고 테스트가 실패한다.
+  - [support파일에서 `Uncaught Exceptions`이벤트를 listen한 뒤 이걸 무시하도록 처리할 수 있다](https://docs.cypress.io/api/events/catalog-of-events#Uncaught-Exceptions)
+  ```ts
+  // cypress/support/exception.ts
+  Cypress.on('uncaught:exception', (err, runnable) => {
+    return false;
+  });
+  ```
+
+  ```ts
+  // cypress/support/e2e.ts
+  import './exception';
+  ```
+
+<br>
+
 ## Cypress Dashboard
 - cypress에서 제공하는 dashboard에서 테스트 결과를 확인할 수 있다.
 - `organization`과 `project`를 만들고 나면 `project id`가 생기고 `key`가 생긴다. `cypress.config.ts`에 `projectId`를 설정하고, `cypress run`에 key를 전달해주면 실행한 테스트 결과를 dashboard에서 확인할 수 있다.
