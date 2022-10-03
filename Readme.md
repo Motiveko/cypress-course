@@ -207,6 +207,11 @@ cy.get('[data-testid="todo-list"] li') // command
 
 - [참고] hover 관련해서 class가 바뀌는 경우를 테스트할 때 메서드 체이닝으로 테스트하면 안된다.
 
+<br>
+
+### Dynamic Table
+- `cy.get(selector).each(callback)`를 이용해서 쿼리한 돔 요소를 순회하면서 콜백함수를 수행할 수 있다.
+  - 이 때 callback함수의 인자인 DOM 요소 타입은 `JQuery<HTMLElement>`인데, `next()`/ `prev()` 메서드를 이용해서 형제 요소를 찾을 수 있다. `nextUntil()`, `nextAll()`, `parent()`등의 다양한 메서드가 있다.
 
 
 <br>
