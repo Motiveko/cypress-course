@@ -293,6 +293,8 @@ cy.get('[data-testid="todo-list"] li') // command
 
 <br>
 
+<!-- TODO :  Link(Spying Request) 정리 -->
+
 ## Cypress Dashboard
 - cypress에서 제공하는 dashboard에서 테스트 결과를 확인할 수 있다.
 - `organization`과 `project`를 만들고 나면 `project id`가 생기고 `key`가 생긴다. `cypress.config.ts`에 `projectId`를 설정하고, `cypress run`에 key를 전달해주면 실행한 테스트 결과를 dashboard에서 확인할 수 있다.
@@ -308,3 +310,4 @@ cy.get('[data-testid="todo-list"] li') // command
 - 테스트가 많아지면 실행 시간도 길어진다. 여러개의 컨테이너를 이용해서 테스트를 실행하는 [`parallel execution`](https://docs.cypress.io/guides/guides/parallelization)도 가능하다. 이건 cypress를 특정 서비스에 integration 하면서 `cypress-io`패키지를 써서 가능한 부분인 것 같다. 
 
 <br>
+
