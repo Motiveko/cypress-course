@@ -310,6 +310,25 @@ cy.get('[data-testid="todo-list"] li') // command
 
 <br>
 
+## Broken Image
+- 이미지 액박 뜨는지를 어떻게 판별할 수 있을까? [`<img>`의 NaturalWitdh or NaturalHeight](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/naturalWidth) 속성을 이용하면 된다.
+- 이 속성은 너비를 제한하지 않고 그린 경우의 이미지 너비/높이로, 이미지 자체의 픽셀이라고 할 수 있다. 액박뜨는 경우는 이 값들이 0이다.
+```ts
+cy.get('div > img[src="/images/Toolsqa.jpg"]')  // 액박
+  .should('be.visible') // 액박도 visible이기 때문에 통과
+  .and($img => {
+    expect(
+      ($img[0] as unknown as HTMLImageElement).naturalWidth,
+    ).to.be.eq(0);  // 액박이 아님을 보장하려면 .graterThan(0)
+  });
+```
+
+<br>
+
+## File Upload/Download
+- [cypress-file-upload](https://www.npmjs.com/package/cypress-file-upload): input에 파일을 attatch하거나 dragNdrop 할 수 있다.
+- [fixture](https://docs.cypress.io/api/commands/fixture#Syntax) : fixture 파일에 접근할 수 있다!
+
 
 
 ## Cypress Dashboard

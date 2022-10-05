@@ -17,6 +17,7 @@
 import './commands';
 import './exception';
 import 'cypress-real-events/support';
+import 'cypress-file-upload';
 require('cypress-xpath');
 
 // Alternatively you can use CommonJS syntax:
