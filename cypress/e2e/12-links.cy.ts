@@ -20,7 +20,7 @@ describe('새 창을 여는 link 테스트', () => {
 });
 
 /**
- * *http request를 intercept('SPYING') 할 수 있다. 요청을 막는게 아니라 브라우저 개발자도구에서 network 탭에서 http request를 recording 하는것과 똑같은방식이다.
+ * *http request를 intercept(spy or stub) 할 수 있다. 요청을 막는게 아니라 브라우저 개발자도구에서 network 탭에서 http request를 recording 하는것과 똑같은방식이다.
  */
 describe('버튼클릭시 발생하는 API Request를 Intercept한다.', () => {
   beforeEach(() => {

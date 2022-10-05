@@ -216,7 +216,7 @@ cy.get('[data-testid="todo-list"] li') // command
 
 <br>
 
-### [Enviroment Variables](https://docs.cypress.io/guides/guides/environment-variables)
+## [Enviroment Variables](https://docs.cypress.io/guides/guides/environment-variables)
 - 환경변수. 테스트 코드에서 `Cypress.env(KEY)`로 읽어서 사용할 수 있다.
 - 설정하는 방법은 크게 4가지다.
   - `cypress.config.ts`파일의 `env`
@@ -259,7 +259,7 @@ cy.get('[data-testid="todo-list"] li') // command
 
 <br>
 
-### Viewport
+## Viewport
 - cypress는 테스트 실행시 뷰포트 크기를 코드에서 지정할 수 있다. 이거는 실제 화면 픽셀과 별개로, 브라우저 크기를 줄여도 고정되어있다.
   ```ts
   // cypress.config.ts
@@ -276,7 +276,7 @@ cy.get('[data-testid="todo-list"] li') // command
   ```
 
 
-### CORS 관련 오류
+## CORS 관련 오류
   - [페이지 접근(`visit`)시 테스트환경에서 CORS가 발생하는 경우](https://docs.cypress.io/guides/references/error-messages#Cypress-detected-that-an-uncaught-error-was-thrown-from-a-cross-origin-script)가 있다. 이 때 이게 exception을 발생시키는데, 테스트코드에서 이를 catch 하지 못해서 `Uncaught Exceptions` 이벤트가 전역에서 발생하게 되고 테스트가 실패한다.
   - [support파일에서 `Uncaught Exceptions`이벤트를 listen한 뒤 이걸 무시하도록 처리할 수 있다](https://docs.cypress.io/api/events/catalog-of-events#Uncaught-Exceptions)
   ```ts
@@ -293,7 +293,24 @@ cy.get('[data-testid="todo-list"] li') // command
 
 <br>
 
-<!-- TODO :  Link(Spying Request) 정리 -->
+## Links
+- link(`<a>`)를 테스트하는 방식은 두가지가 있다. link가 새 `target: _blank`인 경우 클릭시 새창을 열게 되는데, Cypress는 [multiple browser tab을 지원하지 않기 때문](https://docs.cypress.io/guides/references/trade-offs#Permanent-trade-offs-1)에 그냥은 테스트가 어렵다. 이건 `cy.invoke()`를 이용해 `target: _blank`를 지우고 테스트할 수 있다.(혹은 그냥 tag의 attribute값들만 잘 있는지 테스트)
+  ```ts
+  // a tag 에서 target attribute를 지운뒤 클릭
+  cy.get('#simpleLink').invoke('removeAttr', 'target').click();
+  ```
+1. 클릭후 다른 페이지로 이동
+- [`cy.url()`](https://docs.cypress.io/api/commands/url)로 적절한 url로 이동했는지 테스트한다.(해당 페이지에서 redirect가 있는 경우 어떻게 될지..?)
+
+<br>
+
+2. 페이지 이동도 결국 http request를 날리는것이다. 이를 테스트한다.
+- [`cy.intercept()`](https://docs.cypress.io/api/commands/intercept)를 이용하면 http request를 intercept할 수 있다. stub / spy 가 가능한데, spy한 후 실제 응답을 대략적으로 테스트하면 된다.
+- 이 방식은 사용자의 액션에 의해 발생하는 ajax 요청을 테스트 하는 방식과 동일하다.
+
+<br>
+
+
 
 ## Cypress Dashboard
 - cypress에서 제공하는 dashboard에서 테스트 결과를 확인할 수 있다.
