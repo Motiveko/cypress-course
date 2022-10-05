@@ -326,8 +326,9 @@ cy.get('div > img[src="/images/Toolsqa.jpg"]')  // 액박
 <br>
 
 ## File Upload/Download
-- [cypress-file-upload](https://www.npmjs.com/package/cypress-file-upload): input에 파일을 attatch하거나 dragNdrop 할 수 있다.
 - [fixture](https://docs.cypress.io/api/commands/fixture#Syntax) : fixture 파일에 접근할 수 있다!
+- [cypress-file-upload](https://www.npmjs.com/package/cypress-file-upload): Cypress에서 input에 파일을 attatch하거나 dragNdrop 할 수 있다.
+- [cy-verify-downloads](https://www.npmjs.com/package/cy-verify-downloads): Cypress에서 파일 다운로드를 wait,verify 할 수 있는 라이브러리
 
 
 

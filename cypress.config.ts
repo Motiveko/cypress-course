@@ -1,4 +1,5 @@
 import {defineConfig} from 'cypress';
+const {verifyDownloadTasks} = require('cy-verify-downloads');
 
 export default defineConfig({
   e2e: {
@@ -19,6 +20,9 @@ export default defineConfig({
     },
     setupNodeEvents(on, config) {
       // implement node event listeners here
+
+      // Verifiy download import
+      on('task', verifyDownloadTasks);
     },
   },
   pageLoadTimeout: 60000,

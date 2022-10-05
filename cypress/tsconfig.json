@@ -9,7 +9,9 @@
       "cypress",
       "cypress-xpath",
       "node",
-      "cypress-real-events"
+      "cypress-real-events",
+      "cypress-file-upload",
+      "cy-verify-downloads"
     ]
   },
   "include": [

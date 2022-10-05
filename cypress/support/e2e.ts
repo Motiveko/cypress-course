@@ -19,6 +19,7 @@ import './exception';
 import 'cypress-real-events/support';
 import 'cypress-file-upload';
 require('cypress-xpath');
+require('cy-verify-downloads').addCustomCommand();
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

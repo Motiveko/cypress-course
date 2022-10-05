@@ -17,7 +17,9 @@
   "author": "motiveko",
   "license": "ISC",
   "devDependencies": {
+    "cy-verify-downloads": "^0.1.11",
     "cypress": "^10.8.0",
+    "cypress-file-upload": "^5.0.8",
     "cypress-real-events": "^1.7.1",
     "cypress-xpath": "^2.0.1",
     "typescript": "^4.8.3"

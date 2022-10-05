@@ -4,6 +4,8 @@ describe('Upload a file in the QA Demo site', () => {
   });
 
   it('Upload the file', () => {
-    cy.get('#uploadFile').attachFile('example.json');
+    const filename = 'example.json';
+    cy.get('#uploadFile').attachFile(filename);
+    cy.get('#uploadedFilePath').should('contains.text', filename);
   });
 });
