@@ -197,7 +197,7 @@ cy.get('[data-testid="todo-list"] li') // command
 - cypress는 [`cy.hover()` 형태의 hover 동작을 메서드로 제공하지 않는다.](https://docs.cypress.io/api/commands/hover).
 - [몇가지 대안이 있다.](https://docs.cypress.io/api/commands/hover#Workarounds)
   - `trigger('mouseover')`: mouseover 이벤트를 발생시키는 형태로 보인다. 근데 이 방법은 javascript의 `onmouseenter` 핸들러는 트리거 시킬수 있는데, ***css `:hover`에는 동작하지 않는다.***
-  -  [`invoke('show').click()`](https://docs.cypress.io/api/commands/hover#Invoke) : 최종적으로 클릭하는거다. 
+  -  [`invoke('show').click()`](https://docs.cypress.io/api/commands/hover#Invoke) : 최종적으로 클릭하는거다. invoke는 전달된 객체의 method를 실행하고, 결과값을 yield 해주는 메서드다
   - forceClick, custom command..
 
 - 근데 위 대안들(workarounds)은 문제가 생길 여지가 있다. cypress의 기본 이벤트는 untrusted(`event.isTrusted: false`)이기 때문.
@@ -299,6 +299,7 @@ cy.get('[data-testid="todo-list"] li') // command
   // a tag 에서 target attribute를 지운뒤 클릭
   cy.get('#simpleLink').invoke('removeAttr', 'target').click();
   ```
+  
 1. 클릭후 다른 페이지로 이동
 - [`cy.url()`](https://docs.cypress.io/api/commands/url)로 적절한 url로 이동했는지 테스트한다.(해당 페이지에서 redirect가 있는 경우 어떻게 될지..?)
 
@@ -326,11 +327,57 @@ cy.get('div > img[src="/images/Toolsqa.jpg"]')  // 액박
 <br>
 
 ## File Upload/Download
+<!-- TODO : 이거 정리해야한다. -->
 - [fixture](https://docs.cypress.io/api/commands/fixture#Syntax) : fixture 파일에 접근할 수 있다!
 - [cypress-file-upload](https://www.npmjs.com/package/cypress-file-upload): Cypress에서 input에 파일을 attatch하거나 dragNdrop 할 수 있다.
 - [cy-verify-downloads](https://www.npmjs.com/package/cy-verify-downloads): Cypress에서 파일 다운로드를 wait,verify 할 수 있는 라이브러리
 
+<br>
 
+## IFrame
+- iframe 요소의 내부를 테스트 해야 하는 경우가 있다. iframe 내부 요소는 직접 쿼리가 불가능하다. 체이닝을 해야한다. 대략 아래와 같은 형태다
+```ts
+cy.get('iframe').then(($iframe) => {
+  // .contents() 결과가 html 요소다. 거기서 자식(head/body) 중에 body를 find 하는 형태
+  const body = $iframe.contents().find('body');
+})
+```
+
+- ***위에서 body와 같이 선언된 일반적인 요소(`Promise`, 혹은 일반 변수)에 cypress의 assertion 메서드들을 쓰기 위해서는 요소를 [`cy.wrap()`](https://docs.cypress.io/api/commands/wrap#Yields)으로 래핑하여 `yield` 해줘야 한다!***
+```ts
+cy.wrap(body) // Chainable한 subject가 yield 된다.
+  .should('have.text', 'Parent frame');
+```
+
+- `cy.wrap()`의 간단한 예제는 아래와 같다.
+```ts
+const getName = () => {
+  return 'Jane Lane'
+}
+cy.wrap({ name: getName })
+  .invoke('name') // getName 호출해서 'Jane Lane'이 나올것이다. 이게 또 chainable로 래핑될 것
+  .should('eq', 'Jane Lane') // true\
+```
+- Promise도 래핑할 수 있다. 예전에 Promise 방출하는 라이브러리를 테스트 중간에 써야할 일이 있었는데, cy.wrap을 몰라 오류가 나는걸 해결치 못했었는데.. 답은 이것이었다.
+```ts
+const myPromise = new Promise((resolve, reject) => {
+  // we use setTimeout(...) to simulate async code.
+  setTimeout(() => {
+    resolve({
+      type: 'success',
+      message: 'It worked!',
+    })
+  }, 2500)
+})
+
+it('should wait for promises to resolve', () => {
+  cy.wrap(myPromise)
+    .its('message') // invoke는 함수를 호출하고 its는 value를 가져온다.
+    .should('eq', 'It worked!')
+})
+```
+
+<br>
 
 ## Cypress Dashboard
 - cypress에서 제공하는 dashboard에서 테스트 결과를 확인할 수 있다.
