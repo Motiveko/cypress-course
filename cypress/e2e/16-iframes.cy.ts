@@ -17,3 +17,18 @@ describe('Iframe example', () => {
     });
   });
 });
+
+describe('Iframe WYSIWYG(위즈윅) 에디터 타이핑 테스트', () => {
+  beforeEach(() => {
+    cy.visit(`${Cypress.env('theInternet')}/iframe`);
+  });
+
+  it('Iframedemo', () => {
+    cy.get('#mce_0_ifr').then($iframe => {
+      const body = $iframe.contents().find('body');
+      cy.wrap(body)
+        .type('{selectAll}{del}Hello World!')
+        .should('have.text', 'Hello World!');
+    });
+  });
+});

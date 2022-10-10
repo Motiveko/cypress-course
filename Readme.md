@@ -379,6 +379,20 @@ it('should wait for promises to resolve', () => {
 
 <br>
 
+- WYSIWYG 에디터는 보통 iframe으로 구현되어 있다. 이걸 테스트 하려면 타이핑을 해야한다. [`cy.type()`](https://docs.cypress.io/api/commands/type) 메서드를 쓸 수 있다.
+- 이 때 `delete`, `esc` 등의 특수 키는 [`{name}`형태의 argument를 타이핑](https://docs.cypress.io/api/commands/type#Arguments)하도록 코드를 작성하면 된다. `{selectAll}`은 전체선택이다.(이게 마우스 인풋이 아녔구나..)
+
+```ts
+cy.get('#mce_0_ifr').then($iframe => {
+  const body = $iframe.contents().find('body');
+  cy.wrap(body)
+    .type('{selectAll}{del}Hello World!')
+    .should('have.text', 'Hello World!'); // 체이닝
+});
+```
+
+<br>
+
 ## Cypress Dashboard
 - cypress에서 제공하는 dashboard에서 테스트 결과를 확인할 수 있다.
 - `organization`과 `project`를 만들고 나면 `project id`가 생기고 `key`가 생긴다. `cypress.config.ts`에 `projectId`를 설정하고, `cypress run`에 key를 전달해주면 실행한 테스트 결과를 dashboard에서 확인할 수 있다.
