@@ -393,6 +393,39 @@ cy.get('#mce_0_ifr').then($iframe => {
 
 <br>
 
+## Alert, Confirm, Prompt
+### 1. Alert, Confirm
+- 버튼 클릭 등에 의해 `alert()`, `confirm()` 메서드가 호출되면 화면에 alert창이 뜨는데, 이를 [cypress 의 App Event](https://docs.cypress.io/api/events/catalog-of-events#App-Events)로 받을 수 있다. alert은 `window:alert`, confirm은 `window:confirm` 이벤트다.
+```ts
+cy.on('window:alert', (text) => {
+  // text: alert의 텍스트
+})
+
+cy.on('window:confirm', (text) => {
+  // text: confirm의 text
+  // 반환값이 곧 confirm()의 반환값이 된다.
+  return ture
+})
+```
+- ### ***cypress 환경에서는 실제로 alert/confirm 창을 띄우지 않고, 이벤트로 처리한다.***
+
+### 2. Prompt
+- prompt창은 `window.prompt()`메서드로 띄우고, 사용자가 입력 후 확인한 값이 메서드의 반환값이 된다.
+- alert, confirm과 달리 prompt는 cypress 환경에서도 실제와 동일하게 입력창이 뜨는데, 실제로 여기에다 값을 입력할 방법이 없다. 따라서 window.prompt를 [`cy.stub()`](https://docs.cypress.io/api/commands/stub)메서드로 stubbing하여 테스트해야한다.
+```ts
+const promptText = 'prompt text';
+cy.window().then(window => {
+  cy.stub(window, 'prompt').callsFake(() => promptText);
+}); // window.prompt()시 입력창 안띄우고 'prompt text'를 반환한다.
+cy.contains('Click for JS Prompt').click(); // prompt 트리거
+cy.get('#result').should('have.text', `You entered: ${promptText}`);  // 결과 assertion
+```
+
+<br>
+
+
+
+
 ## Cypress Dashboard
 - cypress에서 제공하는 dashboard에서 테스트 결과를 확인할 수 있다.
 - `organization`과 `project`를 만들고 나면 `project id`가 생기고 `key`가 생긴다. `cypress.config.ts`에 `projectId`를 설정하고, `cypress run`에 key를 전달해주면 실행한 테스트 결과를 dashboard에서 확인할 수 있다.
