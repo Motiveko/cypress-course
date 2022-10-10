@@ -423,6 +423,13 @@ cy.get('#result').should('have.text', `You entered: ${promptText}`);  // 결과 
 
 <br>
 
+## Autocomplete
+### 🤩개꿀팁🤩 input 요소(최상단)을 검사 - 개발자도구 html 요소에서 우클릭 - Break on - Subtree modification 을 하면 해당 요소의 subtree에 변경이 일어나는것에 break point를 걸 수 있다. 복잡한 로직이 적용된 자동완성( text입력 - 검색(spinner) - 검색완료(빈칸) - 검색결과 표시 )같은 녀석들을 디버깅 할 때 매우 꿀팁인 것 같다.
+- Autocomplete 같은 것들은 일반적으로 개발자도구 분석을 통해 html 분석이 안된다. 분석할려고 하면 사라지기 때문. 이럴 때 break를 잘 걸어서 디버깅을 잘하면 매우 편하다.
+
+<br>
+
+
 
 
 
